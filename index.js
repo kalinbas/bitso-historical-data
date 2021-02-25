@@ -1,3 +1,5 @@
+// this code uses undocumented /v3/ohlc WS to directly download candles from api.bitso.com
+
 const https = require('https')
 const fs = require('fs')
 
@@ -8,55 +10,33 @@ async function run() {
   // process command line arguments
   const book = args[0]
   const fileName = args[1]
-  const timeFrame = Number(args[2])  
-  const limit = args[3] ? Number(args[3]) : null
+  const from = Number(args[2])
+  const to = Number(args[3])
+  const tf = Number(args[4])
 
-  let finished = false
-  let currentTime = null
-  let marker = null
-  let lines = ["Time UTC,Open,High,Low,Close,Volume"]
+  const tfms = tf * 1000
 
-  let open = null, high = null, low = null, volume = 0, close = null
+  const pageSize = 1000
 
-  while (!finished) {
-      const data = await getData(book, marker)
+  let currentTime = from - (from % tfms)
 
-      if (data && data.success) {
-        if (currentTime === null && data.payload.length > 0) {
-          const time = new Date(data.payload[0].created_at).getTime()
-          currentTime = time - (time % timeFrame)
-        }
+  let lines = ["Time UTC,Open,High,Low,Close,Volume,Trades"]
 
-        console.log(new Date(currentTime).toISOString())
+  while (currentTime < to) {
+
+      // log progress
+      console.log(new Date(currentTime).toISOString())
+
+      const data = await getData(book, currentTime, Math.min(to, currentTime + (tfms * (pageSize - 1))), tf)
+
+      currentTime += tfms * pageSize
+
+      if (data && data.success) {        
 
         for (let i = 0; i < data.payload.length; i++) {
-          const order = data.payload[i]
-          const price = Number(order.price)
-          const time = new Date(data.payload[i].created_at).getTime()
-          if (time >= currentTime) {
-            if (high === null || high < price) high = price
-            if (low === null || low > price) low = price
-            if (close === null) close = price
-            if (time === currentTime) open = price
-            volume += Number(order.amount)
-          } else {
-            const line = `${new Date(currentTime).toISOString()},${open || price},${Math.max(open || price, high)},${Math.min(open || price, low)},${close},${volume.toFixed(8) }`
-            lines.push(line)
-            currentTime -= timeFrame
-            while(time < currentTime) {
-              const line = `${new Date(currentTime).toISOString()},${price},${price},${price},${price},0`
-              lines.push(line)
-              currentTime -= timeFrame
-            }
-            open = null, high = null, low = null, volume = 0, close = null
-            i--
-          }
-          marker = order.tid
-        }
-
-        // if no more data is delivered - finish
-        if (data.payload.length === 0 || (limit && lines.length > limit)) {
-          finished = true
+          const p = data.payload[i]
+          const line = `${new Date(p.bucket_start_time).toISOString()},${p.first_rate},${p.max_rate},${p.min_rate},${p.last_rate},${p.volume},${p.trade_count}`
+          lines.push(line)
         }
 
         // wait 1 second for bitso rate limit
@@ -64,18 +44,18 @@ async function run() {
 
       } else {
         console.log("Error fetching data", data)
-        finished = true
+        break
       }    
   }
 
   fs.writeFileSync(fileName, lines.join('\n'))
 }
 
-async function getData(book, marker) {
+async function getData(book, currentTimeFrom, currentTimeTo, tf) {
   return new Promise((resolve, reject) => {
     const req = https.request({
       hostname: 'api.bitso.com',
-      path: `/v3/trades/?book=${book}&limit=100${marker ? '&marker=' + marker : ''}`,
+      path: `/v3/ohlc?book=${book}&time_bucket=${tf}&start=${currentTimeFrom}&end=${currentTimeTo}`,
       port: 443,
       method: 'GET'
     }, (res) => {
