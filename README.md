@@ -1,5 +1,7 @@
 # Bitso Historical Data
-Get historical data from Bitso OHLC csv format in any timeframe
+Get historical data from Bitso (https://bitso.com) OHLC csv format in any timeframe.
+
+You can get list of available books from their API https://api.bitso.com/v3/available_books/
 
 ## How to run
 Get Node if you don't have it yet https://nodejs.org/en/download/
