@@ -10,8 +10,8 @@ async function run() {
   // process command line arguments
   const book = args[0]
   const fileName = args[1]
-  const from = Number(args[2])
-  const to = Number(args[3])
+  const from = new Date(args[2]).getTime()
+  const to = new Date(args[3]).getTime()
   const tf = Number(args[4])
 
   const tfms = tf * 1000

@@ -8,8 +8,11 @@ async function run() {
   // process command line arguments
   const book = args[0]
   const fileName = args[1]
-  const timeFrame = Number(args[2])  
-  const limit = args[3] ? Number(args[3]) : null
+  const from = new Date(args[2]).getTime()
+  const to = new Date(args[3]).getTime()
+  const tf = Number(args[4])
+
+  const tfms = tf * 1000
 
   let finished = false
   let currentTime = null
@@ -24,7 +27,7 @@ async function run() {
       if (data && data.success) {
         if (currentTime === null && data.payload.length > 0) {
           const time = new Date(data.payload[0].created_at).getTime()
-          currentTime = time - (time % timeFrame)
+          currentTime = time - (time % tfms)
         }
 
         console.log(new Date(currentTime).toISOString())
@@ -42,11 +45,11 @@ async function run() {
           } else {
             const line = `${new Date(currentTime).toISOString()},${open || price},${Math.max(open || price, high)},${Math.min(open || price, low)},${close},${volume.toFixed(8) }`
             lines.push(line)
-            currentTime -= timeFrame
+            currentTime -= tfms
             while(time < currentTime) {
               const line = `${new Date(currentTime).toISOString()},${price},${price},${price},${price},0`
               lines.push(line)
-              currentTime -= timeFrame
+              currentTime -= tfms
             }
             open = null, high = null, low = null, volume = 0, close = null
             i--
@@ -54,8 +57,8 @@ async function run() {
           marker = order.tid
         }
 
-        // if no more data is delivered - finish
-        if (data.payload.length === 0 || (limit && lines.length > limit)) {
+        // if no more data is delivered or current time before from - finish
+        if (data.payload.length === 0 || (currentTime < from)) {
           finished = true
         }
 
