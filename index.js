@@ -40,7 +40,7 @@ async function run() {
             if (time === currentTime) open = price
             volume += Number(order.amount)
           } else {
-            const line = `${new Date(currentTime).toISOString()},${open || price},${high},${low},${close},${volume.toFixed(8) }`
+            const line = `${new Date(currentTime).toISOString()},${open || price},${Math.max(open || price, high)},${Math.min(open || price, low)},${close},${volume.toFixed(8) }`
             lines.push(line)
             currentTime -= timeFrame
             while(time < currentTime) {
