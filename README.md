@@ -20,5 +20,7 @@ Optionally you can specify a limit of how many candles it should download.
 
 `node index.js btc_mxn output.csv 60000 1000`
 
+In example.csv you can see an example output.
+
 
 
