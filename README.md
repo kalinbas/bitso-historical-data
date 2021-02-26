@@ -15,6 +15,7 @@ Download source code and enter directory
 `cd bitso-historical-data`
 
 For example: Download all historical data btc_mxn 1h candles from 2020-01-01 to 2021-01-01 and save to output.csv (candle size in seconds 3600s)
+
 `node index.js btc_mxn output.csv 2020-01-01 2021-01-01 3600`
 
 Valid values for timeframe
