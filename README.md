@@ -8,7 +8,7 @@ You can get list of available books from their API https://api.bitso.com/v3/avai
 
 2. Get Node.JS if you don't have it yet https://nodejs.org/en/download
 
-3. Download source code and run the next lines within a Terminal window in your Pc/Laptop/Mac
+3. Execute the next lines within a Terminal window in your Pc/Laptop/Mac
 
 `git clone https://github.com/kalinbas/bitso-historical-data.git`
 
