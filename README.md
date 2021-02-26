@@ -4,11 +4,11 @@ Get historical data from Bitso (https://bitso.com) OHLC csv format.
 You can get list of available books from their API https://api.bitso.com/v3/available_books/
 
 ## How to run
-Get GIT if you don't have it yet https://git-scm.com/downloads
+1. Get GIT if you don't have it yet https://git-scm.com/downloads
 
-Get Node.JS if you don't have it yet https://nodejs.org/en/download
+2. Get Node.JS if you don't have it yet https://nodejs.org/en/download
 
-Download source code and enter directory
+3. Download source code and run the next lines within a Terminal window in your Pc/Laptop/Mac
 
 `git clone https://github.com/kalinbas/bitso-historical-data.git`
 
