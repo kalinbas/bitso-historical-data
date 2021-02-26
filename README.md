@@ -5,6 +5,7 @@ You can get list of available books from their API https://api.bitso.com/v3/avai
 
 ## How to run
 Get GIT if you don't have it yet https://git-scm.com/downloads
+
 Get Node.JS if you don't have it yet https://nodejs.org/en/download
 
 Download source code and enter directory
