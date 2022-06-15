@@ -54,8 +54,8 @@ async function run() {
 async function getData(book, currentTimeFrom, currentTimeTo, tf) {
   return new Promise((resolve, reject) => {
     const req = https.request({
-      hostname: 'api.bitso.com',
-      path: `/v3/ohlc?book=${book}&time_bucket=${tf}&start=${currentTimeFrom}&end=${currentTimeTo}`,
+      hostname: 'bitso.com',
+      path: `/api/v3/ohlc?book=${book}&time_bucket=${tf}&start=${currentTimeFrom}&end=${currentTimeTo}`,
       port: 443,
       method: 'GET'
     }, (res) => {

@@ -77,8 +77,8 @@ async function run() {
 async function getData(book, marker) {
   return new Promise((resolve, reject) => {
     const req = https.request({
-      hostname: 'api.bitso.com',
-      path: `/v3/trades/?book=${book}&limit=100${marker ? '&marker=' + marker : ''}`,
+      hostname: 'bitso.com',
+      path: `/api/v3/trades/?book=${book}&limit=100${marker ? '&marker=' + marker : ''}`,
       port: 443,
       method: 'GET'
     }, (res) => {
